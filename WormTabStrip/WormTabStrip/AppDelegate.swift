@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window!.makeKeyAndVisible()
             
             
-            let sample = ExampleViewController()
+            let sample = ExampleViewController2()
             
             
             self.window!.rootViewController =  sample

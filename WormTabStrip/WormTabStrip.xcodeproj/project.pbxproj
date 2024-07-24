@@ -14,6 +14,7 @@
 		4510716E1DCEEEB500411876 /* WormTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4510716C1DCEEEB500411876 /* WormTabStrip.swift */; };
 		4510716F1DCEEEB500411876 /* WormTabStripButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4510716D1DCEEEB500411876 /* WormTabStripButton.swift */; };
 		451071721DCEEEBF00411876 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451071711DCEEEBF00411876 /* ExampleViewController.swift */; };
+		5B3936C72C51366800B2DC1B /* ExampleViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3936C62C51366800B2DC1B /* ExampleViewController2.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,9 @@
 		4510716C1DCEEEB500411876 /* WormTabStrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WormTabStrip.swift; sourceTree = "<group>"; };
 		4510716D1DCEEEB500411876 /* WormTabStripButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WormTabStripButton.swift; sourceTree = "<group>"; };
 		451071711DCEEEBF00411876 /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
+		5B3936BE2C51278D00B2DC1B /* WormTabStrip-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WormTabStrip-Bridging-Header.h"; sourceTree = "<group>"; };
+		5B3936C52C51366800B2DC1B /* ExampleViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleViewController2.h; sourceTree = "<group>"; };
+		5B3936C62C51366800B2DC1B /* ExampleViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController2.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,9 @@
 			isa = PBXGroup;
 			children = (
 				451071711DCEEEBF00411876 /* ExampleViewController.swift */,
+				5B3936C52C51366800B2DC1B /* ExampleViewController2.h */,
+				5B3936C62C51366800B2DC1B /* ExampleViewController2.m */,
+				5B3936BE2C51278D00B2DC1B /* WormTabStrip-Bridging-Header.h */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -118,6 +125,7 @@
 				TargetAttributes = {
 					451071551DCEEB6C00411876 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 1540;
 					};
 				};
 			};
@@ -159,6 +167,7 @@
 			files = (
 				451071721DCEEEBF00411876 /* ExampleViewController.swift in Sources */,
 				4510715C1DCEEB6C00411876 /* ViewController.swift in Sources */,
+				5B3936C72C51366800B2DC1B /* ExampleViewController2.m in Sources */,
 				4510716F1DCEEEB500411876 /* WormTabStripButton.swift in Sources */,
 				4510715A1DCEEB6C00411876 /* AppDelegate.swift in Sources */,
 				4510716E1DCEEEB500411876 /* WormTabStrip.swift in Sources */,
@@ -270,10 +279,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = WormTabStrip/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = EzimetYusup.WormTabStrip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WormTabStrip/Example/WormTabStrip-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -281,10 +294,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = WormTabStrip/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = EzimetYusup.WormTabStrip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "WormTabStrip/Example/WormTabStrip-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
