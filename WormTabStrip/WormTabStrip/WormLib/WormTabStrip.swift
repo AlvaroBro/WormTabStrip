@@ -148,8 +148,9 @@ import UIKit
         addContentScrollView()
         buildContent()
         checkAndJustify()
-        selectTabAt(index: currentTabIndex)
+        selectTabAt(index: currentTabIndex, animated: false)
         setTabStyle()
+        slideWormToCurrentTab(animated: false)
     }
     
     private func validate(){
@@ -307,31 +308,42 @@ import UIKit
         
         let tap:UIGestureRecognizer = sender as! UIGestureRecognizer
         let tab:WormTabStripButton = tap.view as! WormTabStripButton
-        selectTab(tab: tab)
+        selectTab(tab: tab, animated: true)
     }
     
-    func selectTabAt(index:Int){
+    func selectTabAt(index:Int, animated:Bool){
         if index >= tabs.count {return}
         let tab = tabs[index]
-        selectTab(tab: tab)
+        selectTab(tab: tab, animated: animated)
     }
     
-    private func selectTab(tab:WormTabStripButton){
+    private func selectTab(tab:WormTabStripButton, animated:Bool){
         prevTabIndex = currentTabIndex
         currentTabIndex = tab.index!
         setTabStyle()
         
-        slideWormToPosition(tab: tab)
-        slideContentScrollViewToPosition(index: tab.index!)
+        slideWormToPosition(tab: tab, animated: animated)
+        slideContentScrollViewToPosition(index: tab.index!, animated: animated)
         adjustTopScrollViewsContentOffsetX(tab: tab)
         centerCurrentlySelectedWorm(tab: tab)
+    }
+    
+    
+    private func slideWormToCurrentTab(animated:Bool) {
+        let tab = tabs[currentTabIndex]
+        slideWormToPosition(tab: tab, animated: animated)
     }
     
     /*******
      move worm to the correct position with slinding animation when the tabs are clicked
      ********/
-    private func slideWormToPosition(tab:WormTabStripButton){
-        UIView.animate(withDuration: 0.3) {
+    private func slideWormToPosition(tab:WormTabStripButton, animated:Bool){
+        
+        if !animated {
+            self.worm.layer.removeAllAnimations()
+        }
+        
+        UIView.animate(withDuration: animated ? 0.3 : 0.0) {
             self.slideWormToTabPosition(tab: tab)
         }
     }
@@ -386,9 +398,9 @@ import UIKit
     /*******
      move content scroll view to the correct position with animation when the tabs are clicked
      ********/
-    private func slideContentScrollViewToPosition(index:Int){
+    private func slideContentScrollViewToPosition(index:Int, animated:Bool){
         let point = CGPoint(x:CGFloat(index)*Width,y: 0)
-        UIView.animate(withDuration: 0.3, animations: {
+        UIView.animate(withDuration: animated ? 0.3 : 0.0, animations: {
                 self.contentScrollView.setContentOffset(point, animated: false)
         }) { (finish) in
                 self.isUserTappingTab = false
@@ -443,7 +455,7 @@ import UIKit
                 contentScrollContentOffsetX = currentX
                 currentTabIndex = Int(currentX/Width)
                 let tab = tabs[currentTabIndex]
-                slideWormToPosition(tab: tab)
+                slideWormToPosition(tab: tab, animated: true)
                 return
             }
             
@@ -464,7 +476,8 @@ import UIKit
             if currentTabIndex  >= 1  {
                 let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: currentTabIndex-1))
                  //print(nextDistance)
-                wormToNextLeft(distance: nextDistance)
+                setWidthAndHeightOfWormForDistance(distance: nextDistance)
+                worm.frame.origin.x = currentWormX -  nextDistance
             }
         }
     }
@@ -519,11 +532,6 @@ import UIKit
         }
         
         worm.layer.cornerRadius = worm.frame.size.height/2
-    }
-    
-    private func wormToNextLeft(distance:CGFloat){
-        setWidthAndHeightOfWormForDistance(distance: distance)
-        worm.frame.origin.x = currentWormX -  distance
     }
     
     private func resetHeightOfWorm(){
@@ -616,8 +624,6 @@ import UIKit
                 vc.removeFromParent()
                 vc.endAppearanceTransition()
             }
-
-
         }
     }
     /*************************************************

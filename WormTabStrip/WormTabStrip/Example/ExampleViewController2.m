@@ -21,7 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.numberOfTabs = 4;
+    self.numberOfTabs = 3;
     [self setUpTabs];
     [self setUpViewPager];
 }
@@ -30,6 +30,17 @@
     self.tabs = [NSMutableArray array];
     for (NSInteger i = 0; i < self.numberOfTabs; i++) {
         UIViewController *vc = [[UIViewController alloc] init];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, 200, 50)];
+        label.text = [NSString stringWithFormat:@"Tab %ld", (long)i];
+        label.textColor = [UIColor blackColor];
+        label.backgroundColor = [UIColor clearColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        [vc.view addSubview:label];
+        [NSLayoutConstraint activateConstraints:@[
+            [label.centerXAnchor constraintEqualToAnchor:vc.view.centerXAnchor],
+            [label.centerYAnchor constraintEqualToAnchor:vc.view.centerYAnchor]
+        ]];
         [self.tabs addObject:vc];
     }
 }
@@ -47,8 +58,8 @@
     viewPager.eyStyle.tabItemDefaultColor = [UIColor lightGrayColor];
     viewPager.eyStyle.topScrollViewBackgroundColor = [UIColor whiteColor];
     viewPager.eyStyle.contentScrollViewBackgroundColor = [UIColor whiteColor];
-    viewPager.eyStyle.WormColor = [UIColor lightGrayColor];
-    viewPager.eyStyle.kPaddingOfIndicator = 15;
+    viewPager.eyStyle.WormColor = [UIColor blueColor];
+    viewPager.eyStyle.kPaddingOfIndicator = 10;
     viewPager.currentTabIndex = 1;
     [viewPager buildUI];
 }
