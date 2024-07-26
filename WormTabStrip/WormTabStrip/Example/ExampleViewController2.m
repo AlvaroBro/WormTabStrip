@@ -59,8 +59,8 @@
     viewPager.eyStyle.topScrollViewBackgroundColor = [UIColor whiteColor];
     viewPager.eyStyle.contentScrollViewBackgroundColor = [UIColor whiteColor];
     viewPager.eyStyle.WormColor = [UIColor blueColor];
-    viewPager.eyStyle.kPaddingOfIndicator = 10;
-    viewPager.currentTabIndex = 1;
+    viewPager.eyStyle.kPaddingOfIndicator = 0;
+    viewPager.currentTabIndex = 0;
     [viewPager buildUI];
 }
 
@@ -84,7 +84,29 @@
 }
 
 - (NSInteger)wtsBadgeForTabWithIndex:(NSInteger)index { 
+    if (index == 2) {
+        return 1;
+    }
     return 0;
+}
+
+- (CustomBadge *)wtsCustomBadgeForTabWithIndex:(NSInteger)index tabFrame:(CGRect)tabFrame {
+    if (index != 1) {
+        return nil;
+    }
+    CGFloat badgeSize = 8;
+    CGFloat badgeMargin = 5;
+    
+    UIView *customView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, badgeSize, badgeSize)];
+    customView.backgroundColor = [UIColor blueColor];
+    customView.layer.cornerRadius = badgeSize / 2;
+    
+    CGFloat badgeX = tabFrame.size.width + badgeMargin;
+    CGFloat badgeY = tabFrame.size.height / 2 - badgeSize / 2;
+    
+    CGPoint badgePosition = CGPointMake(badgeX, badgeY);
+    
+    return [[CustomBadge alloc] initWithView:customView position:badgePosition];
 }
 
 @end

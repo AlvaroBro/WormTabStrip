@@ -9,11 +9,22 @@
 import Foundation
 import UIKit
 
+@objc public class CustomBadge: NSObject {
+    public let view: UIView
+    public let position: CGPoint
+    
+    @objc public init(view: UIView, position: CGPoint) {
+        self.view = view
+        self.position = position
+    }
+}
+
 class WormTabStripButton: UILabel {
     var index: Int?
     var paddingToEachSide: CGFloat = 10
     
     private var badgeLabel: UILabel?
+    private var customBadgeView: UIView?
     
     var tabText: NSString? {
         didSet {
@@ -27,6 +38,12 @@ class WormTabStripButton: UILabel {
         }
     }
     
+    var customBadge: CustomBadge? {
+        didSet {
+            updateCustomBadge()
+        }
+    }
+
     // MARK: - Initialization
     
     override init(frame: CGRect) {
@@ -66,9 +83,11 @@ class WormTabStripButton: UILabel {
         self.text = String(text)
         
         updateBadgePosition()
+        updateCustomBadge()
     }
     
     private func updateBadge() {
+        guard customBadge == nil else { return }
         guard let badgeLabel = badgeLabel else { return }
         
         if let count = badgeCount, count > 0 {
@@ -83,10 +102,22 @@ class WormTabStripButton: UILabel {
         updateBadgePosition()
     }
     
+    private func updateCustomBadge() {
+        customBadgeView?.removeFromSuperview()
+        
+        if let customBadge = customBadge {
+            customBadgeView = customBadge.view
+            addSubview(customBadgeView!)
+            customBadgeView!.frame.origin = customBadge.position
+        }
+        
+        badgeLabel?.isHidden = (customBadge != nil)
+    }
+    
     private func updateBadgePosition() {
         guard let badgeLabel = badgeLabel else { return }
         
         let badgeSize = badgeLabel.frame.size
-        badgeLabel.frame.origin = CGPoint(x: frame.width - badgeSize.width / 2, y: 0)
+        badgeLabel.frame.origin = CGPoint(x: frame.width, y: badgeSize.height / 2)
     }
 }

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+
 @objc public protocol WormTabStripDelegate: AnyObject {
     
     //return the Number SubViews in the ViewPager
@@ -20,6 +21,8 @@ import UIKit
     func wtsDidSelectTab(index:Int)
     
     func wtsBadgeForTab(index: Int) -> Int
+    
+    @objc optional func wtsCustomBadgeForTab(index: Int, tabFrame: CGRect) -> CustomBadge
 }
 
 @objc public enum WormStyle: Int {
@@ -248,27 +251,36 @@ import UIKit
         tap.numberOfTapsRequired = 1
         tap.numberOfTouchesRequired = 1
         tab.addGestureRecognizer(tap)
-        if let badgeCount = delegate?.wtsBadgeForTab(index: tab.index!) {
-                tab.badgeCount = badgeCount
-            }
+        if let customBadge = delegate?.wtsCustomBadgeForTab?(index: tab.index!, tabFrame: tab.frame) {
+            tab.customBadge = customBadge
+        } else if let badgeCount = delegate?.wtsBadgeForTab(index: tab.index!) {
+            tab.badgeCount = badgeCount
+        }
     }
     
     @objc public func updateBadges() {
         for (index, tab) in tabs.enumerated() {
-            if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+            if let customBadge = delegate?.wtsCustomBadgeForTab?(index: index, tabFrame: tab.frame) {
+                tab.customBadge = customBadge
+            } else if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
                 tab.badgeCount = badgeCount
             } else {
                 tab.badgeCount = nil
+                tab.customBadge = nil
             }
         }
     }
     
     @objc public func updateBadge(at index: Int) {
         guard index >= 0 && index < tabs.count else { return }
-        if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
-            tabs[index].badgeCount = badgeCount
+        let tab = tabs[index]
+        if let customBadge = delegate?.wtsCustomBadgeForTab?(index: index, tabFrame: tab.frame) {
+            tab.customBadge = customBadge
+        } else if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+            tab.badgeCount = badgeCount
         } else {
-            tabs[index].badgeCount = nil
+            tab.badgeCount = nil
+            tab.customBadge = nil
         }
     }
     
