@@ -18,6 +18,8 @@ import UIKit
     func wtsTitleForTab(index:Int) -> String
 
     func wtsDidSelectTab(index:Int)
+    
+    func wtsBadgeForTab(index: Int) -> Int
 }
 
 @objc public enum WormStyle: Int {
@@ -246,6 +248,28 @@ import UIKit
         tap.numberOfTapsRequired = 1
         tap.numberOfTouchesRequired = 1
         tab.addGestureRecognizer(tap)
+        if let badgeCount = delegate?.wtsBadgeForTab(index: tab.index!) {
+                tab.badgeCount = badgeCount
+            }
+    }
+    
+    @objc public func updateBadges() {
+        for (index, tab) in tabs.enumerated() {
+            if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+                tab.badgeCount = badgeCount
+            } else {
+                tab.badgeCount = nil
+            }
+        }
+    }
+    
+    @objc public func updateBadge(at index: Int) {
+        guard index >= 0 && index < tabs.count else { return }
+        if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+            tabs[index].badgeCount = badgeCount
+        } else {
+            tabs[index].badgeCount = nil
+        }
     }
     
     // add all content views to content scroll view and tabs to top scroll view

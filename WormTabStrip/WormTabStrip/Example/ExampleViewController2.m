@@ -83,4 +83,8 @@
     return vc.view;
 }
 
+- (NSInteger)wtsBadgeForTabWithIndex:(NSInteger)index { 
+    return 0;
+}
+
 @end

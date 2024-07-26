@@ -54,6 +54,10 @@ class ExampleViewController: UIViewController, WormTabStripDelegate {
         return "Tab \(index)"
     }
     
+    func wtsBadgeForTab(index: Int) -> Int {
+        0;
+    }
+    
     func wtsViewOfTab(index: Int) -> UIView {
         let view = tabs[index]
         return view.view
