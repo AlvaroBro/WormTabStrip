@@ -148,6 +148,9 @@ import UIKit
         addContentScrollView()
         buildContent()
         checkAndJustify()
+        if currentTabIndex == -1 {
+            currentTabIndex = 0
+        }
         selectTabAt(index: currentTabIndex, animated: false)
         setTabStyle()
         slideWormToCurrentTab(animated: false)
@@ -320,6 +323,7 @@ import UIKit
     private func selectTab(tab:WormTabStripButton, animated:Bool){
         prevTabIndex = currentTabIndex
         currentTabIndex = tab.index!
+        //print("selectTab: ", currentTabIndex);
         setTabStyle()
         
         slideWormToPosition(tab: tab, animated: animated)
@@ -412,7 +416,7 @@ import UIKit
     //MARK: UIScrollView Delegate start
     ******************************************/
     var prevTabIndex = 0
-    @objc public var currentTabIndex: Int = 0 {
+    @objc public var currentTabIndex: Int = -1 {
         didSet {
             if currentTabIndex != oldValue {
                 delegate?.wtsDidSelectTab(index: currentTabIndex)
@@ -425,8 +429,10 @@ import UIKit
     
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        currentTabIndex = Int(scrollView.contentOffset.x/Width)
+        let currentX = scrollView.contentOffset.x
+        currentTabIndex = Int(currentX > contentScrollContentOffsetX ? ceil(currentX/Width) : currentX/Width)
         
+        //print("scrollViewWillBeginDragging: ", currentTabIndex, " ", scrollView.contentOffset.x, Width!, scrollView.contentOffset.x/Width);
         setTabStyle()
         prevTabIndex = currentTabIndex
         let tab = tabs[currentTabIndex]
@@ -451,21 +457,13 @@ import UIKit
         if currentX > contentScrollContentOffsetX {
             gap = currentX -  contentScrollContentOffsetX
             
-            if gap > Width {
-                contentScrollContentOffsetX = currentX
-                currentTabIndex = Int(currentX/Width)
-                let tab = tabs[currentTabIndex]
-                slideWormToPosition(tab: tab, animated: true)
-                return
-            }
-            
             //if currentTab is not last one do worm to next tab position 
             if currentTabIndex + 1 <= tabs.count {
-                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: currentTabIndex+1))
+                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: min(currentTabIndex+1, tabs.count-1)))
                 // println(nextDistance)
                 setWidthAndHeightOfWormForDistance(distance: nextDistance)
                 if eyStyle.wormStyle == .notWormyLine {
-                    worm.frame.origin.x = currentWormX +  nextDistance
+                    worm.frame.origin.x = currentWormX + nextDistance
                 }
             }
         }else{
@@ -473,11 +471,11 @@ import UIKit
             //which means scroll view is scrolling to left, worm also should worm to left
             gap = contentScrollContentOffsetX - currentX
             //if current is not first tab at left do worm to left
-            if currentTabIndex  >= 1  {
+            if currentTabIndex >= 1  {
                 let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: currentTabIndex-1))
                  //print(nextDistance)
                 setWidthAndHeightOfWormForDistance(distance: nextDistance)
-                worm.frame.origin.x = currentWormX -  nextDistance
+                worm.frame.origin.x = currentWormX - nextDistance
             }
         }
     }
@@ -485,6 +483,7 @@ import UIKit
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let currentX = scrollView.contentOffset.x
         currentTabIndex = Int(currentX/Width)
+        //print("scrollViewDidEndDecelerating: ", currentTabIndex);
         let tab = tabs[currentTabIndex]
         setTabStyle()
         
