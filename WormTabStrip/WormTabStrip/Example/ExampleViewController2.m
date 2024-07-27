@@ -30,11 +30,10 @@
     self.tabs = [NSMutableArray array];
     for (NSInteger i = 0; i < self.numberOfTabs; i++) {
         UIViewController *vc = [[UIViewController alloc] init];
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 50, 200, 50)];
-        label.text = [NSString stringWithFormat:@"Tab %ld", (long)i];
+        vc.view.backgroundColor = [UIColor colorWithHue:((float)i / (float)self.numberOfTabs) saturation:0.5 brightness:0.9 alpha:1.0];
+        UILabel *label = [[UILabel alloc] init];
+        label.text = [NSString stringWithFormat:@"Content for Tab %ld", (long)i];
         label.textColor = [UIColor blackColor];
-        label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = NSTextAlignmentCenter;
         label.translatesAutoresizingMaskIntoConstraints = NO;
         [vc.view addSubview:label];
         [NSLayoutConstraint activateConstraints:@[
