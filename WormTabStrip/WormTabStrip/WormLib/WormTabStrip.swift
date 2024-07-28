@@ -101,10 +101,6 @@ import UIKit
     
     public var shouldCenterSelectedWorm = true
     
-    public var Width: CGFloat!
-    
-    public var Height: CGFloat!
-    
     private var titles: [String]! = []
     
     private var contentViews: [UIView]! = []
@@ -128,12 +124,9 @@ import UIKit
     
     private var dynamicWidthOfTopScrollView: CGFloat = 0
     
-    private let plusOneforMarginOfLastTabToScreenEdge = 1
     //MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        Width = self.frame.width
-        Height = self.frame.height
     }
     convenience required public init(key:String) {
         self.init(frame: CGRect.zero)
@@ -175,25 +168,29 @@ import UIKit
     
     // add top scroll view to the view stack which will contain the all the tabs
     private func addTopScrollView(){
-        topScrollView.frame = CGRect(x: 0,y: 0, width:Width,height:eyStyle.kHeightOfTopScrollView)
+        topScrollView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: eyStyle.kHeightOfTopScrollView)
+        topScrollView.autoresizingMask = [.flexibleWidth, .flexibleBottomMargin]
         topScrollView.backgroundColor = eyStyle.topScrollViewBackgroundColor
         topScrollView.showsHorizontalScrollIndicator = false
         self.addSubview(topScrollView)
     }
     // add divider between the top scroll view and content scroll view
     private func addDivider(){
-        divider.frame = CGRect(x:0,y: eyStyle.kHeightOfTopScrollView, width:Width, height:eyStyle.kHeightOfDivider)
+        divider.frame = CGRect(x:0,y: eyStyle.kHeightOfTopScrollView, width:self.frame.width, height:eyStyle.kHeightOfDivider)
         divider.backgroundColor = eyStyle.dividerBackgroundColor
         self.addSubview(divider)
     }
     // add content scroll view to the view stack which will hold mian  views such like table view ...
     private func addContentScrollView(){
         if eyStyle.isHideTopScrollView {
-            //rootScrollView = UIScrollView(frame: CGRectMake(0,0,Width,Height))
-            contentScrollView.frame =  CGRect(x: 0,y: 0,width: Width,height: Height);
-        }else{
-            contentScrollView.frame = CGRect(x: 0,y: eyStyle.kHeightOfTopScrollView+eyStyle.kHeightOfDivider,width: Width, height: Height-eyStyle.kHeightOfTopScrollView-eyStyle.kHeightOfDivider)
+            contentScrollView.frame = self.bounds
+        } else {
+            contentScrollView.frame = CGRect(x: 0,
+                                             y: eyStyle.kHeightOfTopScrollView + eyStyle.kHeightOfDivider,
+                                             width: self.bounds.width,
+                                             height: self.bounds.height - eyStyle.kHeightOfTopScrollView - eyStyle.kHeightOfDivider)
         }
+        contentScrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         contentScrollView.backgroundColor = eyStyle.contentScrollViewBackgroundColor
         contentScrollView.isPagingEnabled = true
         contentScrollView.delegate = self
@@ -201,6 +198,40 @@ import UIKit
         contentScrollView.showsVerticalScrollIndicator = false
         contentScrollView.bounces = false
         self.addSubview(contentScrollView)
+    }
+    
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Actualizar el tamaño del contentScrollView
+        if eyStyle.isHideTopScrollView {
+            contentScrollView.frame = self.bounds
+        } else {
+            contentScrollView.frame = CGRect(x: 0,
+                                             y: eyStyle.kHeightOfTopScrollView + eyStyle.kHeightOfDivider,
+                                             width: self.bounds.width,
+                                             height: self.bounds.height - eyStyle.kHeightOfTopScrollView - eyStyle.kHeightOfDivider)
+        }
+        
+        // Actualizar el tamaño del contenido
+        contentScrollView.contentSize = CGSize(width: CGFloat(delegate!.wtsNumberOfTabs()) * self.bounds.width,
+                                               height: contentScrollView.bounds.height)
+        
+        // Actualizar la posición y tamaño de las vistas de contenido
+        for i in 0..<delegate!.wtsNumberOfTabs() {
+            let view = delegate!.wtsViewOfTab(index: i)
+            view.frame = CGRect(x: CGFloat(i) * self.bounds.width,
+                                y: 0,
+                                width: self.bounds.width,
+                                height: contentScrollView.bounds.height)
+        }
+        
+        self.checkAndJustify()
+        
+        self.selectTabAt(index: currentTabIndex, animated: false)
+        
+        // Actualizar la posición del worm si es necesario
+        slideWormToCurrentTab(animated: false)
     }
     
     private func addWorm(){
@@ -291,7 +322,7 @@ import UIKit
         for i in 0..<count{
             //position each content view
             let view = delegate!.wtsViewOfTab(index: i)
-            view.frame.origin.x = CGFloat(i)*Width
+            view.frame.origin.x = CGFloat(i)*self.frame.width
             view.frame.origin.y = 0
             view.frame.size.height = contentScrollView.frame.size.height
 
@@ -320,21 +351,23 @@ import UIKit
         and rebuild all top and content views
      ***/
     private func checkAndJustify(){
-        if dynamicWidthOfTopScrollView < Width && !isJustified {
-            isJustified = true            
-            // calculate the available space
-            let gap:CGFloat = Width - dynamicWidthOfTopScrollView
-            // increase the space by dividing available space to # of tab plus one 
-            //plus one bc we always want to have margin from last tab to to right edge of screen
-            eyStyle.spacingBetweenTabs +=  gap/CGFloat(delegate!.wtsNumberOfTabs()+plusOneforMarginOfLastTabToScreenEdge)
-            dynamicWidthOfTopScrollView = 0
-            var XOffset:CGFloat = eyStyle.spacingBetweenTabs;
-            for tab in tabs {
-                tab.frame.origin.x = XOffset
-                XOffset += eyStyle.spacingBetweenTabs + tab.frame.width
-                dynamicWidthOfTopScrollView += eyStyle.spacingBetweenTabs + tab.frame.width
-                topScrollView.contentSize.width = dynamicWidthOfTopScrollView
-            }
+        var totalTabsWidth:CGFloat = 0
+        for tab in tabs {
+            totalTabsWidth += tab.frame.size.width
+        }
+        
+        // calculate the available space
+        let gap:CGFloat = self.frame.width - totalTabsWidth
+        // increase the space by dividing available space to # of tab plus one
+        //plus one bc we always want to have margin from last tab to to right edge of screen
+        eyStyle.spacingBetweenTabs = gap/CGFloat(delegate!.wtsNumberOfTabs()+1)
+        dynamicWidthOfTopScrollView = 0
+        var XOffset:CGFloat = eyStyle.spacingBetweenTabs;
+        for tab in tabs {
+            tab.frame.origin.x = XOffset
+            XOffset += eyStyle.spacingBetweenTabs + tab.frame.width
+            dynamicWidthOfTopScrollView += eyStyle.spacingBetweenTabs + tab.frame.width
+            topScrollView.contentSize.width = dynamicWidthOfTopScrollView
         }
     }
     
@@ -403,8 +436,8 @@ import UIKit
         let XofTab:CGFloat = tab.frame.origin.x
         let spacingBetweenTabs = eyStyle.spacingBetweenTabs
         //if tab at right edge of screen
-        if XofTab - topScrollView.contentOffset.x > Width - (spacingBetweenTabs+widhtOfTab) {
-            topScrollView.setContentOffset(CGPoint(x:XofTab - (Width-(spacingBetweenTabs+widhtOfTab)) , y:0), animated: true)
+        if XofTab - topScrollView.contentOffset.x > self.frame.width - (spacingBetweenTabs+widhtOfTab) {
+            topScrollView.setContentOffset(CGPoint(x:XofTab - (self.frame.width-(spacingBetweenTabs+widhtOfTab)) , y:0), animated: true)
         }
         //if tab at left edge of screen
         if XofTab - topScrollView.contentOffset.x  < spacingBetweenTabs {
@@ -417,7 +450,7 @@ import UIKit
         if shouldCenterSelectedWorm == false {return}
         //if worm tab was right/left side of screen and if there are enough space to scroll to center
         let XofTab:CGFloat = tab.frame.origin.x
-        let toLeftOfScreen = (Width-tab.frame.width)/2
+        let toLeftOfScreen = (self.frame.width-tab.frame.width)/2
         //return if there is no enough space at right
         if XofTab + tab.frame.width + toLeftOfScreen > topScrollView.contentSize.width{
             return
@@ -439,7 +472,7 @@ import UIKit
      move content scroll view to the correct position with animation when the tabs are clicked
      ********/
     private func slideContentScrollViewToPosition(index:Int, animated:Bool){
-        let point = CGPoint(x:CGFloat(index)*Width,y: 0)
+        let point = CGPoint(x:CGFloat(index)*self.frame.width,y: 0)
         UIView.animate(withDuration: animated ? 0.3 : 0.0, animations: {
                 self.contentScrollView.setContentOffset(point, animated: false)
         }) { (finish) in
@@ -466,7 +499,7 @@ import UIKit
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         let currentX = scrollView.contentOffset.x
-        currentTabIndex = Int(currentX > contentScrollContentOffsetX ? ceil(currentX/Width) : currentX/Width)
+        currentTabIndex = Int(currentX > contentScrollContentOffsetX ? ceil(currentX/self.frame.width) : currentX/self.frame.width)
         
         //print("scrollViewWillBeginDragging: ", currentTabIndex, " ", scrollView.contentOffset.x, Width!, scrollView.contentOffset.x/Width);
         setTabStyle()
@@ -518,7 +551,7 @@ import UIKit
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let currentX = scrollView.contentOffset.x
-        currentTabIndex = Int(currentX/Width)
+        currentTabIndex = Int(currentX/self.frame.width)
         //print("scrollViewDidEndDecelerating: ", currentTabIndex);
         let tab = tabs[currentTabIndex]
         setTabStyle()
@@ -546,7 +579,7 @@ import UIKit
     }
     
     private func calculateNextMoveDistance(gap:CGFloat,nextTotal:CGFloat)->CGFloat{
-        let nextMove:CGFloat = (gap*nextTotal)/Width
+        let nextMove:CGFloat = (gap*nextTotal)/self.frame.width
         
         return nextMove
         
@@ -627,7 +660,7 @@ import UIKit
         for i in 0..<count{
             //position each content view
             let view = delegate!.wtsViewOfTab(index: i)
-            view.frame.origin.x = CGFloat(i)*Width
+            view.frame.origin.x = CGFloat(i)*self.frame.width
             view.frame.origin.y = 0
             view.frame.size.height = contentScrollView.frame.size.height
 

@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSMutableArray<UIViewController *> *tabs;
 @property (nonatomic, assign) NSInteger numberOfTabs;
+@property (nonatomic, strong) WormTabStrip *viewPager;
 
 @end
 
@@ -45,22 +46,30 @@
 }
 
 - (void)setUpViewPager {
-    CGRect frame = CGRectMake(0, 40, self.view.frame.size.width, self.view.frame.size.height - 40);
-    WormTabStrip *viewPager = [[WormTabStrip alloc] initWithFrame:frame];
-    [self.view addSubview:viewPager];
-    viewPager.delegate = self;
-    viewPager.eyStyle.wormStyle = WormStyleNotWormyLine;
-    viewPager.eyStyle.isWormEnable = YES;
-    viewPager.eyStyle.spacingBetweenTabs = 0;
-    viewPager.eyStyle.dividerBackgroundColor = [UIColor clearColor];
-    viewPager.eyStyle.tabItemSelectedColor = [UIColor blueColor];
-    viewPager.eyStyle.tabItemDefaultColor = [UIColor lightGrayColor];
-    viewPager.eyStyle.topScrollViewBackgroundColor = [UIColor whiteColor];
-    viewPager.eyStyle.contentScrollViewBackgroundColor = [UIColor whiteColor];
-    viewPager.eyStyle.WormColor = [UIColor blueColor];
-    viewPager.eyStyle.kPaddingOfIndicator = 0;
-    viewPager.currentTabIndex = 0;
-    [viewPager buildUI];
+    self.viewPager = [[WormTabStrip alloc] init];
+    self.viewPager.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.viewPager];
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.viewPager.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:40],
+        [self.viewPager.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.viewPager.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.viewPager.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
+    ]];
+    
+    self.viewPager.delegate = self;
+    self.viewPager.eyStyle.wormStyle = WormStyleNotWormyLine;
+    self.viewPager.eyStyle.isWormEnable = YES;
+    self.viewPager.eyStyle.spacingBetweenTabs = 0;
+    self.viewPager.eyStyle.dividerBackgroundColor = [UIColor clearColor];
+    self.viewPager.eyStyle.tabItemSelectedColor = [UIColor blueColor];
+    self.viewPager.eyStyle.tabItemDefaultColor = [UIColor lightGrayColor];
+    self.viewPager.eyStyle.topScrollViewBackgroundColor = [UIColor yellowColor];
+    self.viewPager.eyStyle.contentScrollViewBackgroundColor = [UIColor whiteColor];
+    self.viewPager.eyStyle.WormColor = [UIColor blueColor];
+    self.viewPager.eyStyle.kPaddingOfIndicator = 0;
+    self.viewPager.currentTabIndex = 0;
+    [self.viewPager buildUI];
 }
 
 #pragma mark - WormTabStripDelegate
