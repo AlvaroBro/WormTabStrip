@@ -7,6 +7,7 @@
 //
 
 #import "ExampleViewController2.h"
+#import "ExampleContentViewController.h"
 #import "WormTabStrip-Swift.h"
 
 @interface ExampleViewController2 () <WormTabStripDelegate>
@@ -30,7 +31,7 @@
 - (void)setUpTabs {
     self.tabs = [NSMutableArray array];
     for (NSInteger i = 0; i < self.numberOfTabs; i++) {
-        UIViewController *vc = [[UIViewController alloc] init];
+        UIViewController *vc = [[ExampleContentViewController alloc] initWithName:[NSString stringWithFormat:@"controller %ld", (long)i]];
         vc.view.backgroundColor = [UIColor colorWithHue:((float)i / (float)self.numberOfTabs) saturation:0.5 brightness:0.9 alpha:1.0];
         UILabel *label = [[UILabel alloc] init];
         label.text = [NSString stringWithFormat:@"Content for Tab %ld", (long)i];

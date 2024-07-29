@@ -15,6 +15,7 @@
 		4510716F1DCEEEB500411876 /* WormTabStripButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4510716D1DCEEEB500411876 /* WormTabStripButton.swift */; };
 		451071721DCEEEBF00411876 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451071711DCEEEBF00411876 /* ExampleViewController.swift */; };
 		5B3936C72C51366800B2DC1B /* ExampleViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3936C62C51366800B2DC1B /* ExampleViewController2.m */; };
+		5B5CCEA92C57923A00883BB0 /* ExampleContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5CCEA82C57923A00883BB0 /* ExampleContentViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,8 @@
 		5B3936BE2C51278D00B2DC1B /* WormTabStrip-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WormTabStrip-Bridging-Header.h"; sourceTree = "<group>"; };
 		5B3936C52C51366800B2DC1B /* ExampleViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExampleViewController2.h; sourceTree = "<group>"; };
 		5B3936C62C51366800B2DC1B /* ExampleViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExampleViewController2.m; sourceTree = "<group>"; };
+		5B5CCEA72C57923A00883BB0 /* ExampleContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleContentViewController.h; sourceTree = "<group>"; };
+		5B5CCEA82C57923A00883BB0 /* ExampleContentViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleContentViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +92,8 @@
 				5B3936C52C51366800B2DC1B /* ExampleViewController2.h */,
 				5B3936C62C51366800B2DC1B /* ExampleViewController2.m */,
 				5B3936BE2C51278D00B2DC1B /* WormTabStrip-Bridging-Header.h */,
+				5B5CCEA72C57923A00883BB0 /* ExampleContentViewController.h */,
+				5B5CCEA82C57923A00883BB0 /* ExampleContentViewController.m */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 				5B3936C72C51366800B2DC1B /* ExampleViewController2.m in Sources */,
 				4510716F1DCEEEB500411876 /* WormTabStripButton.swift in Sources */,
 				4510715A1DCEEB6C00411876 /* AppDelegate.swift in Sources */,
+				5B5CCEA92C57923A00883BB0 /* ExampleContentViewController.m in Sources */,
 				4510716E1DCEEEB500411876 /* WormTabStrip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

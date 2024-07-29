@@ -90,6 +90,7 @@ import UIKit
     
     @objc var dividerBackgroundColor: UIColor = UIColor.red
     
+    @objc var notifyAppearanceTransitions = false
 }
 
 
@@ -317,15 +318,10 @@ import UIKit
     
     // add all content views to content scroll view and tabs to top scroll view
     private func buildContentScrollViewsContent(){
+        print("buildContentScrollViewsContent")
         let count = delegate!.wtsNumberOfTabs()
-        contentScrollView.contentSize.width = CGFloat(count)*self.frame.width
         for i in 0..<count{
-            //position each content view
             let view = delegate!.wtsViewOfTab(index: i)
-            view.frame.origin.x = CGFloat(i)*self.frame.width
-            view.frame.origin.y = 0
-            view.frame.size.height = contentScrollView.frame.size.height
-
             var responder: UIResponder? = view
                    while !(responder is UIViewController) {
                        responder = responder?.next
@@ -339,10 +335,12 @@ import UIKit
                 return
             }
             parent.addChild(vc)
-            vc.beginAppearanceTransition(true, animated: false)
+            //vc.beginAppearanceTransition(true, animated: false)
+            // Don't need to call beginAppearanceTransition and endAppearanceTransition because
+            // it's already called automatically because of addSubview
             contentScrollView.addSubview(view)
             vc.didMove(toParent: parent)
-            vc.endAppearanceTransition()
+            //vc.endAppearanceTransition()
         }
     }
     
@@ -488,6 +486,16 @@ import UIKit
     @objc public var currentTabIndex: Int = -1 {
         didSet {
             if currentTabIndex != oldValue {
+                if delegate!.wtsNumberOfTabs() > oldValue && oldValue >= 0 {
+                    if self.eyStyle.notifyAppearanceTransitions {
+                        syncAppearanceOfVC(tabIndex: oldValue)
+                    }
+                }
+                if delegate!.wtsNumberOfTabs() > currentTabIndex && currentTabIndex >= 0 && oldValue >= 0 {
+                    if self.eyStyle.notifyAppearanceTransitions {
+                        syncAppearanceOfVC(tabIndex: currentTabIndex)
+                    }
+                }
                 delegate?.wtsDidSelectTab(index: currentTabIndex)
             }
         }
@@ -651,47 +659,38 @@ import UIKit
         let tab = tabs[currentTabIndex]
         tab.textColor = eyStyle.tabItemSelectedColor
         tab.font = eyStyle.tabItemSelectedFont
-        syncAppearanceOfVC()
     }
 
-    private func syncAppearanceOfVC(){
-        let count = delegate!.wtsNumberOfTabs()
-        contentScrollView.contentSize.width = CGFloat(count)*self.frame.width
-        for i in 0..<count{
-            //position each content view
-            let view = delegate!.wtsViewOfTab(index: i)
-            view.frame.origin.x = CGFloat(i)*self.frame.width
-            view.frame.origin.y = 0
-            view.frame.size.height = contentScrollView.frame.size.height
-
-            var responder: UIResponder? = view
-                             while !(responder is UIViewController) {
-                                 responder = responder?.next
-                                 if nil == responder {
-                                     break
-                                 }
+    private func syncAppearanceOfVC(tabIndex: Int){
+        print("syncAppearanceOfVC")
+        let view = delegate!.wtsViewOfTab(index: tabIndex)
+        var responder: UIResponder? = view
+                         while !(responder is UIViewController) {
+                             responder = responder?.next
+                             if nil == responder {
+                                 break
                              }
-            if i == currentTabIndex {
-                //view will move to parent
-                let vc = (responder as? UIViewController)!
-                guard let parent = delegate as? UIViewController else {
-                    return
-                }
-                parent.addChild(vc)
-                vc.beginAppearanceTransition(true, animated: false)
-                vc.didMove(toParent: parent)
-                vc.endAppearanceTransition()
-            } else {
-                //remove view from parent
-                let vc = (responder as? UIViewController)!
-                guard delegate is UIViewController else {
-                    return
-                }
-                vc.beginAppearanceTransition(false, animated: false)
-                vc.willMove(toParent: nil)
-                vc.removeFromParent()
-                vc.endAppearanceTransition()
+                         }
+        if tabIndex == currentTabIndex {
+            //view will move to parent
+            let vc = (responder as? UIViewController)!
+            guard let parent = delegate as? UIViewController else {
+                return
             }
+            parent.addChild(vc)
+            vc.beginAppearanceTransition(true, animated: false)
+            vc.didMove(toParent: parent)
+            vc.endAppearanceTransition()
+        } else {
+            //remove view from parent
+            let vc = (responder as? UIViewController)!
+            guard delegate is UIViewController else {
+                return
+            }
+            vc.beginAppearanceTransition(false, animated: false)
+            vc.willMove(toParent: nil)
+            vc.removeFromParent()
+            vc.endAppearanceTransition()
         }
     }
     /*************************************************
