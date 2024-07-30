@@ -20,7 +20,7 @@ import UIKit
 
     func wtsDidSelectTab(index:Int)
     
-    func wtsBadgeForTab(index: Int) -> Int
+    @objc optional func wtsBadgeForTab(index: Int) -> Int
     
     @objc optional func wtsCustomBadgeForTab(index: Int, tabFrame: CGRect) -> CustomBadge
 }
@@ -287,7 +287,7 @@ import UIKit
         tab.addGestureRecognizer(tap)
         if let customBadge = delegate?.wtsCustomBadgeForTab?(index: tab.index!, tabFrame: tab.frame) {
             tab.customBadge = customBadge
-        } else if let badgeCount = delegate?.wtsBadgeForTab(index: tab.index!) {
+        } else if let badgeCount = delegate?.wtsBadgeForTab?(index: tab.index!) {
             tab.badgeCount = badgeCount
         }
     }
@@ -296,7 +296,7 @@ import UIKit
         for (index, tab) in tabs.enumerated() {
             if let customBadge = delegate?.wtsCustomBadgeForTab?(index: index, tabFrame: tab.frame) {
                 tab.customBadge = customBadge
-            } else if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+            } else if let badgeCount = delegate?.wtsBadgeForTab?(index: index) {
                 tab.badgeCount = badgeCount
             } else {
                 tab.badgeCount = nil
@@ -310,7 +310,7 @@ import UIKit
         let tab = tabs[index]
         if let customBadge = delegate?.wtsCustomBadgeForTab?(index: index, tabFrame: tab.frame) {
             tab.customBadge = customBadge
-        } else if let badgeCount = delegate?.wtsBadgeForTab(index: index) {
+        } else if let badgeCount = delegate?.wtsBadgeForTab?(index: index) {
             tab.badgeCount = badgeCount
         } else {
             tab.badgeCount = nil
