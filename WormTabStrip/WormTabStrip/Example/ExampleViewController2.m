@@ -52,7 +52,7 @@
     [self.view addSubview:self.viewPager];
     
     [NSLayoutConstraint activateConstraints:@[
-        [self.viewPager.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:40],
+        [self.viewPager.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
         [self.viewPager.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
         [self.viewPager.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
         [self.viewPager.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
