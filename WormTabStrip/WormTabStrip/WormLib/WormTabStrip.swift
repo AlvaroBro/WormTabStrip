@@ -46,6 +46,8 @@ import UIKit
     
     @objc var kHeightOfTopScrollView: CGFloat = 50
     
+    @objc var kLeftMarginOfTopScrollView: CGFloat = 0
+    
     @objc var kMinimumWormHeightRatio: CGFloat = 4/5
     
     /**********************
@@ -54,11 +56,7 @@ import UIKit
     
     //Padding of tabs text to each side
     @objc var kPaddingOfIndicator: CGFloat = 30
-    
-    //initial value for the tabs margin
-    @objc var kWidthOfButtonMargin: CGFloat = 0
-    
-    
+
     @objc var isHideTopScrollView = false
     
     @objc var spacingBetweenTabs: CGFloat = 15
@@ -166,14 +164,18 @@ import UIKit
         }
     }
     
-    
     // add top scroll view to the view stack which will contain the all the tabs
-    private func addTopScrollView(){
-        topScrollView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: eyStyle.kHeightOfTopScrollView)
-        topScrollView.autoresizingMask = [.flexibleWidth, .flexibleBottomMargin]
+    private func addTopScrollView() {
+        topScrollView.translatesAutoresizingMaskIntoConstraints = false
         topScrollView.backgroundColor = eyStyle.topScrollViewBackgroundColor
         topScrollView.showsHorizontalScrollIndicator = false
         self.addSubview(topScrollView)
+        NSLayoutConstraint.activate([
+            topScrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: eyStyle.kLeftMarginOfTopScrollView),
+            topScrollView.topAnchor.constraint(equalTo: self.topAnchor),
+            topScrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            topScrollView.heightAnchor.constraint(equalToConstant: eyStyle.kHeightOfTopScrollView)
+        ])
     }
     // add divider between the top scroll view and content scroll view
     private func addDivider(){
@@ -355,7 +357,7 @@ import UIKit
         }
         
         // calculate the available space
-        let gap:CGFloat = self.frame.width - totalTabsWidth
+        let gap:CGFloat = self.topScrollView.frame.width - totalTabsWidth
         // increase the space by dividing available space to # of tab plus one
         //plus one bc we always want to have margin from last tab to to right edge of screen
         eyStyle.spacingBetweenTabs = gap/CGFloat(delegate!.wtsNumberOfTabs()+1)
