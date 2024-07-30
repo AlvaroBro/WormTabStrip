@@ -71,7 +71,7 @@ import UIKit
     // font size of tabs
     //let kFontSizeOfTabButton:CGFloat = 15
     @objc var tabItemDefaultFont: UIFont = UIFont(name: "arial", size: 14)!
-    @objc var tabItemSelectedFont: UIFont = UIFont(name: "arial", size: 16)!
+    @objc var tabItemSelectedFont: UIFont = UIFont(name: "arial", size: 14)!
     
     /*****
      colors
@@ -272,9 +272,9 @@ import UIKit
     private func formatButton(tab:WormTabStripButton,XOffset:CGFloat){
         tab.frame.size.height = eyStyle.kHeightOfTopScrollView
         tab.paddingToEachSide = eyStyle.kPaddingOfIndicator
-        //            tab.backgroundColor = UIColor.yellowColor()
         tab.tabText = delegate!.wtsTitleForTab(index: tab.index!) as NSString?
         tab.textColor = eyStyle.tabItemDefaultColor
+        tab.font = eyStyle.tabItemDefaultFont
         tab.frame.origin.x = XOffset
         tab.frame.origin.y = 0
         tab.textAlignment = .center
@@ -318,7 +318,7 @@ import UIKit
     
     // add all content views to content scroll view and tabs to top scroll view
     private func buildContentScrollViewsContent(){
-        print("buildContentScrollViewsContent")
+        //print("buildContentScrollViewsContent")
         let count = delegate!.wtsNumberOfTabs()
         for i in 0..<count{
             let view = delegate!.wtsViewOfTab(index: i)
@@ -420,6 +420,7 @@ import UIKit
     }
     
     private func slideWormToTabPosition(tab:WormTabStripButton){
+        //print("slideWormToTabPosition ", tab.frame)
         self.worm.frame.origin.x = tab.frame.origin.x
         self.worm.frame.size.width = tab.frame.width
         currentWormWidth = tab.frame.width
@@ -509,7 +510,7 @@ import UIKit
         let currentX = scrollView.contentOffset.x
         currentTabIndex = Int(currentX > contentScrollContentOffsetX ? ceil(currentX/self.frame.width) : currentX/self.frame.width)
         
-        //print("scrollViewWillBeginDragging: ", currentTabIndex, " ", scrollView.contentOffset.x, Width!, scrollView.contentOffset.x/Width);
+        //print("scrollViewWillBeginDragging: ", currentTabIndex)
         setTabStyle()
         prevTabIndex = currentTabIndex
         let tab = tabs[currentTabIndex]
@@ -535,12 +536,22 @@ import UIKit
             gap = currentX -  contentScrollContentOffsetX
             
             //if currentTab is not last one do worm to next tab position 
-            if currentTabIndex + 1 <= tabs.count {
-                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: min(currentTabIndex+1, tabs.count-1)))
+            if currentTabIndex + 1 < tabs.count {
+                let currentTab = tabs[currentTabIndex]
+                let nextTab = tabs[currentTabIndex + 1]
+                let sizeDiff: CGFloat = nextTab.frame.size.width - currentTab.frame.size.width
+                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: min(currentTabIndex+1, tabs.count-1), adjustment: eyStyle.wormStyle == .notWormyLine ? -sizeDiff : 0))
                 // println(nextDistance)
                 setWidthAndHeightOfWormForDistance(distance: nextDistance)
                 if eyStyle.wormStyle == .notWormyLine {
-                    worm.frame.origin.x = currentWormX + nextDistance
+                    worm.frame.origin.x = currentWormX + nextDistance // Necesario para que sea progresivo y no wormy
+                    let tabsDistance: CGFloat = nextTab.frame.origin.x - currentTab.frame.origin.x
+                    let traveledDistance: CGFloat = worm.frame.origin.x - currentTab.frame.origin.x
+                    let progess: CGFloat = traveledDistance / tabsDistance
+                    let delta: CGFloat = progess * sizeDiff
+                    //print(delta)
+                    let intermediateWidth: CGFloat = currentTab.frame.size.width + delta
+                    worm.frame.size.width = intermediateWidth
                 }
             }
         }else{
@@ -549,12 +560,27 @@ import UIKit
             gap = contentScrollContentOffsetX - currentX
             //if current is not first tab at left do worm to left
             if currentTabIndex >= 1  {
-                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: currentTabIndex-1))
+                let prevTab = tabs[currentTabIndex - 1]
+                let currentTab = tabs[currentTabIndex]
+                let sizeDiff: CGFloat = prevTab.frame.size.width - currentTab.frame.size.width
+                let nextDistance:CGFloat = calculateNextMoveDistance(gap: gap, nextTotal: getNextTotalWormingDistance(index: currentTabIndex-1, adjustment: eyStyle.wormStyle == .notWormyLine ? -sizeDiff : 0))
                  //print(nextDistance)
                 setWidthAndHeightOfWormForDistance(distance: nextDistance)
-                worm.frame.origin.x = currentWormX - nextDistance
+                let prevWormX: CGFloat = worm.frame.origin.x;
+                worm.frame.origin.x = currentWormX - nextDistance // necesario para que sea progresivo (tanto wormy como no wormy)
+                if eyStyle.wormStyle == .notWormyLine {
+                    let tabsDistance: CGFloat = currentTab.frame.origin.x - prevTab.frame.origin.x
+                    let traveledDistance: CGFloat = currentTab.frame.origin.x - prevWormX
+                    let progess: CGFloat = traveledDistance / tabsDistance
+                    let delta: CGFloat = progess * sizeDiff
+                    //print(delta)
+                    let intermediateWidth: CGFloat = currentTab.frame.size.width + delta
+                    worm.frame.origin.x -= delta
+                    worm.frame.size.width = intermediateWidth
+                }
             }
         }
+        //print(worm.frame)
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -580,9 +606,9 @@ import UIKit
     /*************************************************
      //MARK:  UIScrollView Delegate Calculations  start
      ******************************************/
-    private  func getNextTotalWormingDistance(index:Int)->CGFloat{
+    private  func getNextTotalWormingDistance(index:Int, adjustment:CGFloat)->CGFloat{
         let tab = tabs[index]
-        let nextTotal:CGFloat = eyStyle.spacingBetweenTabs + tab.frame.width
+        let nextTotal:CGFloat = eyStyle.spacingBetweenTabs + tab.frame.width + adjustment
         return nextTotal
     }
     
@@ -597,7 +623,7 @@ import UIKit
         if distance < 1 {
             resetHeightOfWorm()
         }else{
-            let height:CGFloat  = self.calculatePrespectiveHeightOfIndicatorLine(distance: distance)
+            let height:CGFloat = self.calculatePrespectiveHeightOfIndicatorLine(distance: distance)
             worm.frame.size.height = height
             worm.frame.size.width = eyStyle.wormStyle == .notWormyLine ? currentWormWidth : currentWormWidth + distance
         }
@@ -662,7 +688,7 @@ import UIKit
     }
 
     private func syncAppearanceOfVC(tabIndex: Int){
-        print("syncAppearanceOfVC")
+        //print("syncAppearanceOfVC")
         let view = delegate!.wtsViewOfTab(index: tabIndex)
         var responder: UIResponder? = view
                          while !(responder is UIViewController) {
