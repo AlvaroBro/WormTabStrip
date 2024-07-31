@@ -34,7 +34,7 @@ class ExampleViewController: UIViewController, WormTabStripDelegate {
         viewPager.delegate = self
         viewPager.eyStyle.wormStyle = .bubble
         viewPager.eyStyle.isWormEnable = true
-        viewPager.eyStyle.spacingBetweenTabs = 15
+        viewPager.eyStyle.kMinSpacingBetweenTabs = 15
         viewPager.eyStyle.dividerBackgroundColor = .red
         viewPager.eyStyle.tabItemSelectedColor = .yellow
         viewPager.currentTabIndex = 3

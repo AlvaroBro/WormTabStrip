@@ -23,7 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.numberOfTabs = 5;
+    self.numberOfTabs = 3;
     [self setUpTabs];
     [self setUpViewPager];
 }
@@ -61,7 +61,7 @@
     self.viewPager.delegate = self;
     self.viewPager.eyStyle.wormStyle = WormStyleNotWormyLine;
     self.viewPager.eyStyle.isWormEnable = YES;
-    self.viewPager.eyStyle.spacingBetweenTabs = 50;
+    self.viewPager.eyStyle.kMinSpacingBetweenTabs = 50;
     self.viewPager.eyStyle.dividerBackgroundColor = [UIColor lightGrayColor];
     self.viewPager.eyStyle.kHeightOfDivider = 5;
     self.viewPager.eyStyle.tabItemSelectedColor = [UIColor blueColor];

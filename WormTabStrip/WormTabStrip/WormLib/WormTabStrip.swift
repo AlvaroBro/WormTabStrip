@@ -59,7 +59,7 @@ import UIKit
 
     @objc var isHideTopScrollView = false
     
-    @objc var spacingBetweenTabs: CGFloat = 15
+    @objc var kMinSpacingBetweenTabs: CGFloat = 15
     
     @objc var isWormEnable = true
     
@@ -122,6 +122,8 @@ import UIKit
     private var isUserTappingTab = false
     
     private var dynamicWidthOfTopScrollView: CGFloat = 0
+    
+    private var spacingBetweenTabs: CGFloat = 0;
     
     //MARK: init
     override init(frame: CGRect) {
@@ -260,14 +262,14 @@ import UIKit
     
     private func buildTopScrollViewsContent(){
         dynamicWidthOfTopScrollView = 0
-        var XOffset:CGFloat = eyStyle.spacingBetweenTabs;
+        var XOffset:CGFloat = spacingBetweenTabs;
         for i in 0..<delegate!.wtsNumberOfTabs(){
             //build the each tab and position it
             let tab:WormTabStripButton = WormTabStripButton()
             tab.index = i
             formatButton(tab: tab, XOffset: XOffset)
-            XOffset += eyStyle.spacingBetweenTabs + tab.frame.width
-            dynamicWidthOfTopScrollView += eyStyle.spacingBetweenTabs + tab.frame.width
+            XOffset += spacingBetweenTabs + tab.frame.width
+            dynamicWidthOfTopScrollView += spacingBetweenTabs + tab.frame.width
             topScrollView.addSubview(tab)
             tabs.append(tab)
             topScrollView.contentSize.width = dynamicWidthOfTopScrollView
@@ -366,13 +368,13 @@ import UIKit
         let gap:CGFloat = self.topScrollView.frame.width - totalTabsWidth
         // increase the space by dividing available space to # of tab plus one
         //plus one bc we always want to have margin from last tab to to right edge of screen
-        eyStyle.spacingBetweenTabs = max(eyStyle.spacingBetweenTabs, gap/CGFloat(delegate!.wtsNumberOfTabs()+1))
+        spacingBetweenTabs = gap > 0 ? max(eyStyle.kMinSpacingBetweenTabs, gap/CGFloat(delegate!.wtsNumberOfTabs()+1)) : eyStyle.kMinSpacingBetweenTabs
         dynamicWidthOfTopScrollView = 0
-        var XOffset:CGFloat = eyStyle.spacingBetweenTabs;
+        var XOffset:CGFloat = spacingBetweenTabs
         for tab in tabs {
             tab.frame.origin.x = XOffset
-            XOffset += eyStyle.spacingBetweenTabs + tab.frame.width
-            dynamicWidthOfTopScrollView += eyStyle.spacingBetweenTabs + tab.frame.width
+            XOffset += spacingBetweenTabs + tab.frame.width
+            dynamicWidthOfTopScrollView += spacingBetweenTabs + tab.frame.width
             topScrollView.contentSize.width = dynamicWidthOfTopScrollView
         }
     }
@@ -441,7 +443,6 @@ import UIKit
     private func adjustTopScrollViewsContentOffsetX(tab:WormTabStripButton){
         let widhtOfTab:CGFloat = tab.bounds.size.width
         let XofTab:CGFloat = tab.frame.origin.x
-        let spacingBetweenTabs = eyStyle.spacingBetweenTabs
         //if tab at right edge of screen
         if XofTab - topScrollView.contentOffset.x > self.frame.width - (spacingBetweenTabs+widhtOfTab) {
             topScrollView.setContentOffset(CGPoint(x:XofTab - (self.frame.width-(spacingBetweenTabs+widhtOfTab)) , y:0), animated: true)
@@ -616,7 +617,7 @@ import UIKit
      ******************************************/
     private  func getNextTotalWormingDistance(index:Int, adjustment:CGFloat)->CGFloat{
         let tab = tabs[index]
-        let nextTotal:CGFloat = eyStyle.spacingBetweenTabs + tab.frame.width + adjustment
+        let nextTotal:CGFloat = spacingBetweenTabs + tab.frame.width + adjustment
         return nextTotal
     }
     
