@@ -23,7 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.numberOfTabs = 3;
+    self.numberOfTabs = 4;
     [self setUpTabs];
     [self setUpViewPager];
 }
@@ -61,14 +61,17 @@
     self.viewPager.delegate = self;
     self.viewPager.eyStyle.wormStyle = WormStyleNotWormyLine;
     self.viewPager.eyStyle.isWormEnable = YES;
-    self.viewPager.eyStyle.spacingBetweenTabs = 0;
-    self.viewPager.eyStyle.dividerBackgroundColor = [UIColor clearColor];
+    self.viewPager.eyStyle.spacingBetweenTabs = 10;
+    self.viewPager.eyStyle.dividerBackgroundColor = [UIColor lightGrayColor];
+    self.viewPager.eyStyle.kHeightOfDivider = 5;
     self.viewPager.eyStyle.tabItemSelectedColor = [UIColor blueColor];
     self.viewPager.eyStyle.tabItemDefaultColor = [UIColor lightGrayColor];
     self.viewPager.eyStyle.topScrollViewBackgroundColor = [UIColor yellowColor];
     self.viewPager.eyStyle.contentScrollViewBackgroundColor = [UIColor whiteColor];
     self.viewPager.eyStyle.WormColor = [UIColor blueColor];
     self.viewPager.eyStyle.kPaddingOfIndicator = 0;
+    self.viewPager.eyStyle.tabItemDefaultFont = [UIFont systemFontOfSize:18];
+    self.viewPager.eyStyle.tabItemSelectedFont = [UIFont systemFontOfSize:18];
     self.viewPager.currentTabIndex = 0;
     [self.viewPager buildUI];
 }
@@ -84,7 +87,7 @@
 }
 
 - (NSString * _Nonnull)wtsTitleForTabWithIndex:(NSInteger)index {
-    return [NSString stringWithFormat:@"Tab %ld", (long)index];
+    return [NSString stringWithFormat:@"Tab long long long %ld", (long)index];
 }
 
 - (UIView * _Nonnull)wtsViewOfTabWithIndex:(NSInteger)index { 

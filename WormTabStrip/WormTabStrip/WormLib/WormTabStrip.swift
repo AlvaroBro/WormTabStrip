@@ -179,9 +179,15 @@ import UIKit
     }
     // add divider between the top scroll view and content scroll view
     private func addDivider(){
-        divider.frame = CGRect(x:0,y: eyStyle.kHeightOfTopScrollView, width:self.frame.width, height:eyStyle.kHeightOfDivider)
+        divider.translatesAutoresizingMaskIntoConstraints = false
         divider.backgroundColor = eyStyle.dividerBackgroundColor
         self.addSubview(divider)
+        NSLayoutConstraint.activate([
+            divider.leadingAnchor.constraint(equalTo: self.topScrollView.leadingAnchor, constant: 0),
+            divider.topAnchor.constraint(equalTo: self.topScrollView.bottomAnchor),
+            divider.trailingAnchor.constraint(equalTo: self.topScrollView.trailingAnchor),
+            divider.heightAnchor.constraint(equalToConstant: eyStyle.kHeightOfDivider)
+        ])
     }
     // add content scroll view to the view stack which will hold mian  views such like table view ...
     private func addContentScrollView(){
