@@ -366,7 +366,7 @@ import UIKit
         let gap:CGFloat = self.topScrollView.frame.width - totalTabsWidth
         // increase the space by dividing available space to # of tab plus one
         //plus one bc we always want to have margin from last tab to to right edge of screen
-        eyStyle.spacingBetweenTabs = gap/CGFloat(delegate!.wtsNumberOfTabs()+1)
+        eyStyle.spacingBetweenTabs = max(eyStyle.spacingBetweenTabs, gap/CGFloat(delegate!.wtsNumberOfTabs()+1))
         dynamicWidthOfTopScrollView = 0
         var XOffset:CGFloat = eyStyle.spacingBetweenTabs;
         for tab in tabs {

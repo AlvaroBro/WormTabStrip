@@ -12,10 +12,10 @@ import UIKit
 class ExampleViewController: UIViewController, WormTabStripDelegate {
 
     var tabs:[UIViewController] = []
-    let numberOfTabs = 3
+    let numberOfTabs = 10
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor(netHex: 0x364756)
         setUpTabs()
         setUpViewPager()
     }
@@ -32,17 +32,12 @@ class ExampleViewController: UIViewController, WormTabStripDelegate {
         let viewPager:WormTabStrip = WormTabStrip(frame: frame)
         self.view.addSubview(viewPager)
         viewPager.delegate = self
-        viewPager.eyStyle.wormStyle = .notWormyLine
+        viewPager.eyStyle.wormStyle = .bubble
         viewPager.eyStyle.isWormEnable = true
-        viewPager.eyStyle.spacingBetweenTabs = 0
-        viewPager.eyStyle.dividerBackgroundColor = .clear
-        viewPager.eyStyle.tabItemSelectedColor = .blue
-        viewPager.eyStyle.tabItemDefaultColor = .lightGray
-        viewPager.eyStyle.topScrollViewBackgroundColor = .white
-        viewPager.eyStyle.contentScrollViewBackgroundColor = .white
-        viewPager.eyStyle.WormColor = .blue
-        viewPager.currentTabIndex = 0
-        viewPager.eyStyle.kPaddingOfIndicator = 0;
+        viewPager.eyStyle.spacingBetweenTabs = 15
+        viewPager.eyStyle.dividerBackgroundColor = .red
+        viewPager.eyStyle.tabItemSelectedColor = .yellow
+        viewPager.currentTabIndex = 3
         viewPager.buildUI()
     }
     
@@ -51,16 +46,23 @@ class ExampleViewController: UIViewController, WormTabStripDelegate {
     }
     
     func wtsTitleForTab(index: Int) -> String {
+        if(index%4==0){
+            return "really long and longer Tab \(index)"
+        }
         return "Tab \(index)"
-    }
-    
-    func wtsBadgeForTab(index: Int) -> Int {
-        0;
     }
     
     func wtsViewOfTab(index: Int) -> UIView {
         let view = tabs[index]
         return view.view
+    }
+    
+    func wtsReachedLeftEdge(panParam: UIPanGestureRecognizer) {
+        
+    }
+    
+    func wtsReachedRightEdge(panParam: UIPanGestureRecognizer) {
+        
     }
 
     func wtsDidSelectTab(index: Int) {
