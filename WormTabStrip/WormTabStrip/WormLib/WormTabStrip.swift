@@ -280,9 +280,9 @@ import UIKit
     private func formatButton(tab:WormTabStripButton,XOffset:CGFloat){
         tab.frame.size.height = eyStyle.kHeightOfTopScrollView
         tab.paddingToEachSide = eyStyle.kPaddingOfIndicator
+        tab.font = eyStyle.tabItemDefaultFont
         tab.tabText = delegate!.wtsTitleForTab(index: tab.index!) as NSString?
         tab.textColor = eyStyle.tabItemDefaultColor
-        tab.font = eyStyle.tabItemDefaultFont
         tab.frame.origin.x = XOffset
         tab.frame.origin.y = 0
         tab.textAlignment = .center
