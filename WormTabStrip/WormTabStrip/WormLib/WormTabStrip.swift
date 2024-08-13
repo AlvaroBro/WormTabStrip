@@ -391,7 +391,7 @@ import UIKit
         selectTab(tab: tab, animated: true)
     }
     
-    func selectTabAt(index:Int, animated:Bool){
+    @objc public func selectTabAt(index:Int, animated:Bool){
         if index >= tabs.count {return}
         let tab = tabs[index]
         selectTab(tab: tab, animated: animated)
