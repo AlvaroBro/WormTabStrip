@@ -185,7 +185,7 @@ import UIKit
         divider.backgroundColor = eyStyle.dividerBackgroundColor
         self.addSubview(divider)
         NSLayoutConstraint.activate([
-            divider.leadingAnchor.constraint(equalTo: self.topScrollView.leadingAnchor, constant: 0),
+            divider.leadingAnchor.constraint(equalTo: self.topScrollView.leadingAnchor, constant: -eyStyle.kLeftMarginOfTopScrollView),
             divider.topAnchor.constraint(equalTo: self.topScrollView.bottomAnchor),
             divider.trailingAnchor.constraint(equalTo: self.topScrollView.trailingAnchor),
             divider.heightAnchor.constraint(equalToConstant: eyStyle.kHeightOfDivider)
