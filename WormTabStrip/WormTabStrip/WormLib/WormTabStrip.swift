@@ -63,6 +63,8 @@ import UIKit
     
     @objc var isWormEnable = true
     
+    @objc var leftJustified = false
+    
     /**********
      fonts
      ************/
@@ -114,9 +116,6 @@ import UIKit
     
     //delegate
     @objc weak var delegate: WormTabStripDelegate?
-    
-    //Justify flag
-    private var isJustified = false
     
     //tapping flag
     private var isUserTappingTab = false
@@ -368,9 +367,14 @@ import UIKit
         let gap:CGFloat = self.topScrollView.frame.width - totalTabsWidth
         // increase the space by dividing available space to # of tab plus one
         //plus one bc we always want to have margin from last tab to to right edge of screen
-        spacingBetweenTabs = gap > 0 ? max(eyStyle.kMinSpacingBetweenTabs, gap/CGFloat(delegate!.wtsNumberOfTabs()+1)) : eyStyle.kMinSpacingBetweenTabs
+        var XOffset:CGFloat = 0
+        if self.eyStyle.leftJustified {
+            spacingBetweenTabs = eyStyle.kMinSpacingBetweenTabs
+        } else {
+            spacingBetweenTabs = gap > 0 ? max(eyStyle.kMinSpacingBetweenTabs, gap/CGFloat(delegate!.wtsNumberOfTabs()+1)) : eyStyle.kMinSpacingBetweenTabs
+            XOffset = spacingBetweenTabs
+        }
         dynamicWidthOfTopScrollView = 0
-        var XOffset:CGFloat = spacingBetweenTabs
         for tab in tabs {
             tab.frame.origin.x = XOffset
             XOffset += spacingBetweenTabs + tab.frame.width
@@ -449,7 +453,7 @@ import UIKit
         }
         //if tab at left edge of screen
         if XofTab - topScrollView.contentOffset.x  < spacingBetweenTabs {
-            topScrollView.setContentOffset(CGPoint(x:XofTab - spacingBetweenTabs, y:0), animated: true)
+            topScrollView.setContentOffset(CGPoint(x:!self.eyStyle.leftJustified ? XofTab - spacingBetweenTabs : 0, y:0), animated: true)
         }
     }
     
