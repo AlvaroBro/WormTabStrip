@@ -18,7 +18,7 @@ import UIKit
     //return the title for each view
     func wtsTitleForTab(index:Int) -> String
 
-    func wtsDidSelectTab(index:Int)
+    func wtsDidSelectTab(index:Int, prevIndex:Int)
     
     @objc optional func wtsBadgeForTab(index: Int) -> Int
     
@@ -510,7 +510,7 @@ import UIKit
                         syncAppearanceOfVC(tabIndex: currentTabIndex)
                     }
                 }
-                delegate?.wtsDidSelectTab(index: currentTabIndex)
+                delegate?.wtsDidSelectTab(index: currentTabIndex, prevIndex: oldValue)
             }
         }
     }
