@@ -26,7 +26,7 @@ class WormTabStripButton: UILabel {
     private var badgeLabel: UILabel?
     private var customBadgeView: UIView?
     
-    var tabText: NSString? {
+    var tabText: NSAttributedString? {
         didSet {
             updateLayout()
         }
@@ -77,10 +77,17 @@ class WormTabStripButton: UILabel {
     private func updateLayout() {
         guard let text = tabText else { return }
         
-        let textSize: CGSize = text.size(withAttributes: [.font: font!])
+        let attributedText = NSMutableAttributedString(attributedString: text)
+        attributedText.addAttribute(.font, value: font!, range: NSRange(location: 0, length: attributedText.length))
+        
+        let maxSize = CGSize(width: Swift.Double.greatestFiniteMagnitude, height: Swift.Double.greatestFiniteMagnitude)
+
+        let textSize = attributedText.boundingRect(with: maxSize,
+                                         options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                         context: nil).size
         self.frame.size.width = textSize.width + paddingToEachSide * 2
         
-        self.text = String(text)
+        self.attributedText = text
         
         updateBadgePosition()
         updateCustomBadge()

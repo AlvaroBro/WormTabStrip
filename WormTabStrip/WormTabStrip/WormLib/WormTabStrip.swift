@@ -16,7 +16,7 @@ import UIKit
     //return the View for sepecific position
     func wtsViewOfTab(index:Int) -> UIView
     //return the title for each view
-    func wtsTitleForTab(index:Int) -> String
+    func wtsTitleForTab(index:Int) -> NSAttributedString
 
     func wtsDidSelectTab(index:Int, prevIndex:Int)
     
@@ -282,7 +282,7 @@ import UIKit
         tab.frame.size.height = eyStyle.kHeightOfTopScrollView
         tab.paddingToEachSide = eyStyle.kPaddingOfIndicator
         tab.font = eyStyle.tabItemDefaultFont
-        tab.tabText = delegate!.wtsTitleForTab(index: tab.index!) as NSString?
+        tab.tabText = delegate!.wtsTitleForTab(index: tab.index!) as NSAttributedString?
         tab.textColor = eyStyle.tabItemDefaultColor
         tab.frame.origin.x = XOffset
         tab.frame.origin.y = 0
