@@ -98,7 +98,7 @@ import UIKit
     
     private let topScrollView: UIScrollView = UIScrollView()
     
-    private let contentScrollView: UIScrollView = UIScrollView()
+    @objc public let contentScrollView: UIScrollView = UIScrollView()
     
     public var shouldCenterSelectedWorm = true
     
